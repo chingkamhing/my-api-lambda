@@ -1,4 +1,4 @@
-# wk-cronjob-lambda
+# my-callback-lambda
 
 This is a proof-of-concept callback lambda function which expected to be called from an API gateway endpoint. 
 
