@@ -22,11 +22,6 @@ This is a proof-of-concept callback lambda function which expected to be called 
 
 * set environment variables as above accordingly
 * invoke 'go run *.go'
-    + default health check "[api-qa.wahkwong.com.hk](https://api-qa.wahkwong.com.hk/)"
-    + no JWT_TOKEN is needed
-* invoke 'go run *.go -endpoint shipwatch/v1/health'
-    + health check shipwatch data pipeline
-    + need to set JWT_TOKEN accordingly
 
 ## How to test in AWS console
 
@@ -35,13 +30,74 @@ This is a proof-of-concept callback lambda function which expected to be called 
 * under Test tab, input the following to "Event JSON"
     ```JSON
     {
-        "url": "https://api-qa.wahkwong.com.hk/health",
-        "method": "GET"
+        "method": "PUT",
+        "path": "/health",
+        "body": {
+            "callback": "ValueChanged",
+            "data": {
+                "value": 1001
+            }
+        }
     }
     ```
 * click "Test" button should have "Executing function: succeeded" with response
     ```JSON
-    {"status":"ok"}
+    {
+        "status": "ok",
+        "method": "PUT",
+        "path": "/callback/company-1001",
+        "body": {
+            "callback": "ValueChanged",
+            "data": {
+                "value": 1001
+            }
+        }
+    }
+    ```
+
+## API Gateway
+
+* this lambda is supposed to be called from API Gateway
+* create a new resource of "PUT" "/callback/company-1001" 
+* added "Resources" > "Integration request" > "Mapping templates"
+    ```
+    ##  See https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html
+    ##  This template will pass through all parameters including path, querystring, header, stage variables, and context through to the integration endpoint via the body/payload
+    #set($allParams = $input.params())
+    {
+    "method" : "$context.httpMethod",
+    "path" : "$context.resourcePath",
+    "body" : $input.body,
+    "context" : {
+        "account-id" : "$context.identity.accountId",
+        "api-id" : "$context.apiId",
+        "api-key" : "$context.identity.apiKey",
+        "authorizer-principal-id" : "$context.authorizer.principalId",
+        "caller" : "$context.identity.caller",
+        "cognito-authentication-provider" : "$context.identity.cognitoAuthenticationProvider",
+        "cognito-authentication-type" : "$context.identity.cognitoAuthenticationType",
+        "cognito-identity-id" : "$context.identity.cognitoIdentityId",
+        "cognito-identity-pool-id" : "$context.identity.cognitoIdentityPoolId",
+        "http-method" : "$context.httpMethod",
+        "stage" : "$context.stage",
+        "source-ip" : "$context.identity.sourceIp",
+        "user" : "$context.identity.user",
+        "user-agent" : "$context.identity.userAgent",
+        "user-arn" : "$context.identity.userArn",
+        "request-id" : "$context.requestId",
+        "resource-id" : "$context.resourceId",
+        "resource-path" : "$context.resourcePath"
+        }
+    }
+    ```
+* test the API resource with
+    ```JSON
+    {
+        "callback": "ValueChanged",
+        "data": {
+            "value": 1001
+        }
+    }
     ```
 
 ## References
