@@ -14,9 +14,9 @@ This is a proof-of-concept callback lambda function which expected to be called 
 * build the lambda
     + invoke "make release"
 * upload the lambda zip file
-    + go to “Lambda > Functions > http-request-wrapper > Code”
-    + click "Upload from > .zip file", then click "Upload" again and select the built zip file http-request-wrapper.zip
-    + upload the same file to other lambda function http-request-wrapper-healthcheck and http-request-wrapper-qa
+    + go to “Lambda > Functions > my-callback-lambda > Code”
+    + click "Upload from > .zip file", then click "Upload" again and select the built zip file my-callback-lambda.zip
+    + upload the same file to other lambda function my-callback-lambda-healthcheck and my-callback-lambda-qa
 
 ## How to test in local development
 
@@ -31,7 +31,7 @@ This is a proof-of-concept callback lambda function which expected to be called 
 ## How to test in AWS console
 
 * go to AWS Lambda > Functions
-* click on "http-request-wrapper" or "http-request-wrapper-healthcheck"
+* click on "my-callback-lambda" or "my-callback-lambda-healthcheck"
 * under Test tab, input the following to "Event JSON"
     ```JSON
     {
