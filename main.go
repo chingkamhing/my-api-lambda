@@ -3,9 +3,7 @@ package main
 import (
 	"context"
 	"flag"
-	"log"
 	"log/slog"
-	"net/url"
 	"os"
 	"time"
 
@@ -45,9 +43,9 @@ func awsLambdaHandler(eventHandler LambdaEventHandler) {
 		if err != nil {
 			lc, _ := lambdacontext.FromContext(ctx)
 			deadline, _ := ctx.Deadline()
-			logger.Error("my-callback-lambda", "method", event.Method, "url", event.Url, "response", response, "error", err, "REQUEST ID", lc.AwsRequestID, "FUNCTION NAME", lambdacontext.FunctionName, "DEADLINE", deadline.String())
+			logger.Error("my-callback-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response, "error", err, "REQUEST ID", lc.AwsRequestID, "FUNCTION NAME", lambdacontext.FunctionName, "DEADLINE", deadline.String())
 		} else {
-			logger.Info("my-callback-lambda", "method", event.Method, "url", event.Url, "response", response)
+			logger.Info("my-callback-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response)
 		}
 		return response, err
 	}
@@ -57,24 +55,22 @@ func awsLambdaHandler(eventHandler LambdaEventHandler) {
 // cliLambdaHandler is a command line handler for local development purpose
 func cliLambdaHandler(eventHandler LambdaEventHandler) {
 	flagMethod := flag.String("method", "GET", "http method")
-	flagUrl := flag.String("url", "https://api-qa.wahkwong.com.hk/health", "http request url")
+	flagPath := flag.String("path", "/health", "http request path")
+	flagBody := flag.String("body", `{"callback": "ValueChanged", }`, "http request path")
 	flag.Parse()
-	u, err := url.Parse(*flagUrl)
-	if err != nil {
-		log.Fatalf("Invalid url %q: %v", *flagUrl, err)
-	}
 	var event = customEvent{
 		Method: *flagMethod,
-		Url:    u.String(),
+		Path:   *flagPath,
+		Body:   *flagBody,
 	}
-	logger.Debug("Event handler", "method", *flagMethod, "url", u.String())
+	logger.Debug("Event handler", "method", *flagMethod, "path", *flagPath, "body", *flagBody)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	response, err := eventHandler(ctx, event)
 	if err != nil {
-		logger.Error("my-callback-lambda", "method", event.Method, "url", event.Url, "response", response, "error", err.Error())
+		logger.Error("my-callback-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response, "error", err.Error())
 	} else {
-		logger.Info("my-callback-lambda", "method", event.Method, "url", event.Url, "response", response)
+		logger.Info("my-callback-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response)
 	}
 }
 
