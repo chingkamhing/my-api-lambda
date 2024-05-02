@@ -60,8 +60,17 @@ The data flow is:
 
 ## API Gateway
 
-* this lambda is supposed to be called from API Gateway
-* create a new resource of "PUT" "/callback/company-1001" 
+The above lambda is supposed to be called from API Gateway.
+
+### How to deploy
+* in "API Gateway" > "APIs", click "Create API" button
+* in "API Gateway" > "APIs" > "Resources", click "Create resource" and "Create method" accordingly to create a new resource of "PUT" "/callback/company-1001"
+* once all APIs are created, click "Deploy API" button
+    + select "No stage" for the very first deployment (somehow, must deploy as "No stage" first before you can create a stage)
+    + click "Deploy" button to deploy
+* in "API Gateway" > "APIs" > "My Callback API (on2i8y7rxj)" > "Stages"
+    + click "Create stage" button to create a new stage, in "Deployment", select the datetime of the appropriate deploy
+    + click "Create stage" button again to really create it    
 * added "Resources" > "Integration request" > "Mapping templates"
     ```
     ##  See https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-mapping-template-reference.html
@@ -93,7 +102,7 @@ The data flow is:
         }
     }
     ```
-* test the API resource with
+* AWS gui console test the API resource with
     ```JSON
     {
         "callback": "ValueChanged",
@@ -101,6 +110,12 @@ The data flow is:
             "value": 1001
         }
     }
+    ```
+* terminal test
+    + invoke "./script/test-my-api.sh"
+    + expect response:
+    ```JSON
+    "{\"status\":\"ok\",\"method\":\"PUT\",\"path\":\"/callback/company-1001\",\"body\":{\"hello\":\"Hello, my first API lambda!\"}}"
     ```
 
 ## References
