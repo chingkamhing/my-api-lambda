@@ -23,7 +23,7 @@ var logger *slog.Logger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerO
 var env = os.Getenv("ENV")
 
 func main() {
-	logger.Info("my-callback-lambda", "version", version, "build", build, "user", user)
+	logger.Info("my-api-lambda", "version", version, "build", build, "user", user)
 	var lambdaHandler LambdaHandler
 	if env == "prod" || env == "qa" {
 		// aws environment
@@ -43,9 +43,9 @@ func awsLambdaHandler(eventHandler LambdaEventHandler) {
 		if err != nil {
 			lc, _ := lambdacontext.FromContext(ctx)
 			deadline, _ := ctx.Deadline()
-			logger.Error("my-callback-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response, "error", err, "REQUEST ID", lc.AwsRequestID, "FUNCTION NAME", lambdacontext.FunctionName, "DEADLINE", deadline.String())
+			logger.Error("my-api-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response, "error", err, "REQUEST ID", lc.AwsRequestID, "FUNCTION NAME", lambdacontext.FunctionName, "DEADLINE", deadline.String())
 		} else {
-			logger.Info("my-callback-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response)
+			logger.Info("my-api-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response)
 		}
 		return response, err
 	}
@@ -68,9 +68,9 @@ func cliLambdaHandler(eventHandler LambdaEventHandler) {
 	defer cancel()
 	response, err := eventHandler(ctx, event)
 	if err != nil {
-		logger.Error("my-callback-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response, "error", err.Error())
+		logger.Error("my-api-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response, "error", err.Error())
 	} else {
-		logger.Info("my-callback-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response)
+		logger.Info("my-api-lambda", "method", event.Method, "path", event.Path, "body", event.Body, "response", response)
 	}
 }
 

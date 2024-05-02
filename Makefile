@@ -2,7 +2,7 @@
 # - https://aws.amazon.com/blogs/compute/migrating-aws-lambda-functions-from-the-go1-x-runtime-to-the-custom-runtime-on-amazon-linux-2/
 
 # lambda function name
-LAMBDA_NAME ?= my-callback-lambda
+LAMBDA_NAME ?= my-api-lambda
 # deploy environment of: qa, prod
 ENV ?= qa
 

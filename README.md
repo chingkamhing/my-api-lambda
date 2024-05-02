@@ -1,6 +1,9 @@
-# my-callback-lambda
+# my-api-lambda
 
-This is a proof-of-concept callback lambda function which expected to be called from an API gateway endpoint. 
+This is a proof-of-concept API lambda function which expected to be called from an API gateway endpoint.
+
+The data flow is:
+* RESTful json data > AWS API Gateway > AWS API Gateway mapping > customEvent > lambda handler
 
 ## Deploy Environment Variables
 
@@ -14,9 +17,9 @@ This is a proof-of-concept callback lambda function which expected to be called 
 * build the lambda
     + invoke "make release"
 * upload the lambda zip file
-    + go to “Lambda > Functions > my-callback-lambda > Code”
-    + click "Upload from > .zip file", then click "Upload" again and select the built zip file my-callback-lambda.zip
-    + upload the same file to other lambda function my-callback-lambda-healthcheck and my-callback-lambda-qa
+    + go to “Lambda > Functions > my-api-lambda > Code”
+    + click "Upload from > .zip file", then click "Upload" again and select the built zip file my-api-lambda.zip
+    + upload the same file to other lambda function my-api-lambda-healthcheck and my-api-lambda-qa
 
 ## How to test in local development
 
@@ -26,7 +29,7 @@ This is a proof-of-concept callback lambda function which expected to be called 
 ## How to test in AWS console
 
 * go to AWS Lambda > Functions
-* click on "my-callback-lambda" or "my-callback-lambda-healthcheck"
+* click on "my-api-lambda" or "my-api-lambda-healthcheck"
 * under Test tab, input the following to "Event JSON"
     ```JSON
     {

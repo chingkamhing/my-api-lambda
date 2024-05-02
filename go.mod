@@ -1,4 +1,4 @@
-module github.com/chingkamhing/my-callback-lambda
+module github.com/chingkamhing/my-api-lambda
 
 go 1.21
 
