@@ -6,9 +6,11 @@ LAMBDA_NAME ?= my-api-lambda
 # deploy environment of: qa, prod
 ENV ?= qa
 
+# build the binary images
+# note: added extra flag "-s -w" which remove debug information in order to make the output binary smaller
 .PHONY: build
 build:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -ldflags="-X 'main.version=$$(git describe --tags --abbrev=0)' -X 'main.build=$$(date '+%Y-%m-%dT%H:%M:%S')' -X 'main.user=$${USER}'" -o dist/bootstrap *.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -ldflags="-s -w -X 'main.version=$$(git describe --tags --abbrev=0)' -X 'main.build=$$(date '+%Y-%m-%dT%H:%M:%S')' -X 'main.user=$${USER}'" -o dist/bootstrap *.go
 	CGO_ENABLED=0 go build -v -ldflags="-X 'main.version=$$(git describe --tags --abbrev=0)' -X 'main.build=$$(date '+%Y-%m-%dT%H:%M:%S')' -X 'main.user=$${USER}'" -o dist/bootstrap.native *.go
 
 .PHONY: release
