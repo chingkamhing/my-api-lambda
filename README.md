@@ -118,6 +118,10 @@ The above lambda is supposed to be called from API Gateway.
     "{\"status\":\"ok\",\"method\":\"PUT\",\"path\":\"/callback/company-1001\",\"body\":{\"hello\":\"Hello, my first API lambda!\"}}"
     ```
 
+### How to disable
+* need to delete all the API stages
+* without stage, API wont be accessible
+
 ## References
 
 * [AWS Lambda and Golang](https://blog.stackademic.com/aws-lambda-and-golang-72c191294e82)
